@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"log"
 	"log/slog"
 	"net/http"
@@ -11,6 +12,9 @@ import (
 	"github.com/petrostrak/picwise-ai/handler"
 )
 
+//go:embed public
+var FS embed.FS
+
 func init() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
@@ -20,6 +24,7 @@ func init() {
 func main() {
 	router := chi.NewMux()
 
+	router.Handle("/*", http.StripPrefix("/", http.FileServer(http.FS(FS))))
 	router.Get("/", handler.MakeHandler(handler.HandleHomeIndex))
 
 	port := os.Getenv("HTTP_LISTEN_ADDRESS")
