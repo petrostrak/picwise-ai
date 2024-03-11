@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
+	"github.com/petrostrak/picwise-ai/handler"
 )
 
 func init() {
@@ -19,9 +20,7 @@ func init() {
 func main() {
 	router := chi.NewMux()
 
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, world!"))
-	})
+	router.Get("/", handler.HandleHomeIndex)
 
 	port := os.Getenv("HTTP_LISTEN_ADDRESS")
 	slog.Info("application running on", "port", port)
