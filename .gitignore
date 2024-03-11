@@ -22,4 +22,3 @@ go.work
 
 bin
 *_templ.go*
-styles.css
