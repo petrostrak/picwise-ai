@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 	"strings"
+
+	"github.com/petrostrak/picwise-ai/types"
 )
 
 func WithUser(next http.Handler) http.Handler {
@@ -11,8 +14,12 @@ func WithUser(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			return
 		}
-		println("from the WithUser middleware")
-		next.ServeHTTP(w, r)
+		user := types.AuthenticatedUser{
+			Email:    "pit.trak@gmail.com",
+			LoggedIn: true,
+		}
+		ctx := context.WithValue(r.Context(), types.UserContextKey, user)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 
 	return http.HandlerFunc(fn)
