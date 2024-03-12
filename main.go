@@ -23,6 +23,7 @@ func init() {
 
 func main() {
 	router := chi.NewMux()
+	router.Use(handler.WithUser)
 
 	router.Handle("/*", http.StripPrefix("/", http.FileServer(http.FS(FS))))
 	router.Get("/", handler.MakeHandler(handler.HandleHomeIndex))
