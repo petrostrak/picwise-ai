@@ -10,7 +10,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"github.com/petrostrak/picwise-ai/handler"
-	"github.com/petrostrak/picwise-ai/pkg/supabase"
+	"github.com/petrostrak/picwise-ai/pkg/sb"
 )
 
 //go:embed public
@@ -21,7 +21,7 @@ func Init() error {
 		return err
 	}
 
-	return supabase.Init()
+	return sb.Init()
 }
 
 func main() {
