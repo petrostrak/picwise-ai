@@ -31,18 +31,22 @@ templ LoginForm(creds supabase.UserCredentials, errors LoginErrors) {
                 <span class="label-text">Email</span>
             </div>
             <input type="email" value={creds.Email} name="email" required autocomplete="off" placeholder="Type here" class="input input-bordered w-full" />
-            <div class="label">
-                <span class="label-alt text-error">Wrong, try again</span>
-            </div>
+            if len(errors.Email) > 0 {
+                <div class="text-sm text-error">
+                {errors.Email}
+                </div> 
+            }
         </div>
         <div class="w-full">
             <div class="label">
                 <span class="label-text">Password</span>
             </div>
             <input type="password" name="password" required autocomplete="off" placeholder="Type here" class="input input-bordered w-full" />
-            <div class="label">
-                <span class="label-alt text-error">Wrong, try again</span>
-            </div>
+            if len(errors.Password) > 0 {
+                <div class="text-sm text-error">
+                {errors.Password}
+                </div> 
+            }
         </div>
         if len(errors.InvalidCredentials) >0 {
             <div class="text-sm text-error">
