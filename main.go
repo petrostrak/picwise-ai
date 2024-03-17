@@ -10,18 +10,25 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
 	"github.com/petrostrak/picwise-ai/handler"
+	"github.com/petrostrak/picwise-ai/pkg/supabase"
 )
 
 //go:embed public
 var FS embed.FS
 
-func init() {
+func Init() error {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return supabase.Init()
 }
 
 func main() {
+	if err := Init(); err != nil {
+		log.Fatal(err)
+	}
+
 	router := chi.NewMux()
 	router.Use(handler.WithUser)
 
