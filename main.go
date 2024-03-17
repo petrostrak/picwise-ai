@@ -35,6 +35,7 @@ func main() {
 	router.Handle("/*", http.StripPrefix("/", http.FileServer(http.FS(FS))))
 	router.Get("/", handler.Make(handler.HandleHomeIndex))
 	router.Get("/login", handler.Make(handler.HandleSignInIndex))
+	router.Post("/login", handler.Make(handler.HandleLoginCreate))
 
 	port := os.Getenv("HTTP_LISTEN_ADDRESS")
 	slog.Info("application running on", "port", port)
