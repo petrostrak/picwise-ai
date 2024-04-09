@@ -25,6 +25,10 @@ templ Signup() {
 	}
 }
 
+templ SignupSuccess(email string){
+    <div>A confirmation email has been sent to <span class="font-semibold text-success"> {email} </span></div>
+}
+
 type SignupParams struct {
     Email string
     Password string

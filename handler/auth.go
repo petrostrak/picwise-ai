@@ -38,7 +38,15 @@ func HandleSignupCreate(w http.ResponseWriter, r *http.Request) error {
 		return render(w, r, auth.SignupForm(params, errors))
 	}
 
-	return nil
+	user, err := sb.Client.Auth.SignUp(r.Context(), supabase.UserCredentials{
+		Email:    params.Email,
+		Password: params.Password,
+	})
+	if err != nil {
+		return err
+	}
+
+	return render(w, r, auth.SignupSuccess(user.Email))
 }
 
 func HandleLoginCreate(w http.ResponseWriter, r *http.Request) error {
