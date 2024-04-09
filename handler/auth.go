@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/petrostrak/picwise-ai/pkg/kit/validate"
 	"log/slog"
 	"net/http"
@@ -73,5 +74,14 @@ func HandleLoginCreate(w http.ResponseWriter, r *http.Request) error {
 	http.SetCookie(w, cookie)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 
+	return nil
+}
+
+func HandleAuthCallback(w http.ResponseWriter, r *http.Request) error {
+	accessToken := r.URL.Query().Get("access_token")
+	if len(accessToken) == 0 {
+		return render(w, r, auth.CallbaclScript())
+	}
+	fmt.Println(accessToken)
 	return nil
 }

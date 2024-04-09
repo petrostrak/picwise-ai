@@ -126,3 +126,11 @@ templ LoginForm(creds supabase.UserCredentials, errors LoginErrors) {
         <button class="btn btn-primary w-full">Login <i class="fa-solid fa-arrow-right"></i></button>
     </form>
 }
+
+templ CallbaclScript() {
+    <script>
+        let url = window.location.href;
+        let newURL = url.replace("#", "?");
+        window.location = newURL
+    </script>
+}
