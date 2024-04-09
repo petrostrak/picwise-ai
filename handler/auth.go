@@ -6,7 +6,6 @@ import (
 
 	"github.com/nedpals/supabase-go"
 	"github.com/petrostrak/picwise-ai/pkg/sb"
-	"github.com/petrostrak/picwise-ai/pkg/sb/util"
 	"github.com/petrostrak/picwise-ai/view/auth"
 )
 
@@ -18,18 +17,6 @@ func HandleLoginCreate(w http.ResponseWriter, r *http.Request) error {
 	credentials := supabase.UserCredentials{
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
-	}
-
-	if !util.IsValidEmail(credentials.Email) {
-		return render(w, r, auth.LoginForm(credentials, auth.LoginErrors{
-			Email: "Please enter a valid email",
-		}))
-	}
-
-	if reason, ok := util.ValidatePassword(credentials.Password); !ok {
-		return render(w, r, auth.LoginForm(credentials, auth.LoginErrors{
-			Password: reason,
-		}))
 	}
 
 	resp, err := sb.Client.Auth.SignIn(r.Context(), credentials)
