@@ -13,6 +13,12 @@ func HandleSignInIndex(w http.ResponseWriter, r *http.Request) error {
 	return render(w, r, auth.Login())
 }
 
+func HandleSignupIndex(w http.ResponseWriter, r *http.Request) error {
+	return render(w, r, auth.Signup())
+}
+
+func HandleSignupCreate(w http.ResponseWriter, r *http.Request) error { return nil }
+
 func HandleLoginCreate(w http.ResponseWriter, r *http.Request) error {
 	credentials := supabase.UserCredentials{
 		Email:    r.FormValue("email"),

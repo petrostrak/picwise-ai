@@ -14,6 +14,72 @@ templ Login() {
 	}
 }
 
+templ Signup() {
+	@layout.App(false) {
+		<div class="flex justify-center mt-[calc(100vh-100vh+8rem)]">
+			<div class="max-w-md w-full bg-base-300 py-12 px-8 rounded-xl">
+				<h1 class="text-center text-xl font-black mb-10">Login to picwiseai</h1>
+				@SignupForm(SignupParams{}, SignupErrors{})
+			</div>
+		</div>
+	}
+}
+
+type SignupParams struct {
+    Email string
+    Password string
+    ConfirmPassword string
+}
+
+type SignupErrors struct {
+    Email string
+    Password string
+    ConfirmPassword string
+}
+
+templ SignupForm(params SignupParams, errors SignupErrors) {
+    <form
+        hx-post="/signup"
+        hx-swap="outerHTML"
+        class="space-y-4"
+        >
+        <div class="w-full">
+            <div class="label">
+                <span class="label-text">Email</span>
+            </div>
+            <input type="email" value={params.Email} name="email" required autocomplete="off" placeholder="Type here" class="input input-bordered w-full" />
+            if len(errors.Email) > 0 {
+                <div class="text-sm text-error">
+                {errors.Email}
+                </div>
+            }
+        </div>
+        <div class="w-full">
+            <div class="label">
+                <span class="label-text">Password</span>
+            </div>
+            <input type="password" name="password" required autocomplete="off" class="input input-bordered w-full" />
+            if len(errors.Password) > 0 {
+                <div class="label">
+                    <span class="label-text-alt text-error">{errors.Password}</span>
+                </div>
+            }
+        </div>
+        <div class="w-full">
+            <div class="label">
+                <span class="label-text">Confirm Password</span>
+            </div>
+            <input type="password" name="confirmPassword" required autocomplete="off" class="input input-bordered w-full" />
+            if len(errors.Password) > 0 {
+                <div class="label">
+                    <span class="label-text-alt text-error">{errors.ConfirmPassword}</span>
+                </div>
+            }
+        </div>
+        <button class="btn btn-primary w-full">Login <i class="fa-solid fa-arrow-right"></i></button>
+    </form>
+}
+
 type LoginErrors struct {
     Email string
     Password string
