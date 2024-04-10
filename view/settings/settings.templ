@@ -1,0 +1,10 @@
+package settings
+
+import "github.com/petrostrak/picwise-ai/view/layout"
+import "github.com/petrostrak/picwise-ai/types"
+
+templ Index(user types.AuthenticatedUser) {
+    @layout.App(true) {
+        <div>Hello {user.Email}</div>
+    }
+}
