@@ -27,3 +27,12 @@ func Make(h func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
 		}
 	}
 }
+
+func hxRedirect(w http.ResponseWriter, r *http.Request, to string) error {
+	if len(r.Header.Get("HX-Request")) > 0 {
+		w.Header().Set("HX-Redirect", to)
+		return nil
+	}
+	http.Redirect(w, r, to, http.StatusSeeOther)
+	return nil
+}

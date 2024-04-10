@@ -64,9 +64,7 @@ func HandleLoginCreate(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	setAuthCookie(w, resp.AccessToken)
-	http.Redirect(w, r, "/", http.StatusSeeOther)
-
-	return nil
+	return hxRedirect(w, r, "/")
 }
 
 func HandleAuthCallback(w http.ResponseWriter, r *http.Request) error {
@@ -76,6 +74,20 @@ func HandleAuthCallback(w http.ResponseWriter, r *http.Request) error {
 	}
 	setAuthCookie(w, accessToken)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+	return nil
+}
+
+func HandleLogoutCreate(w http.ResponseWriter, r *http.Request) error {
+	cookie := http.Cookie{
+		Value:    "",
+		Name:     "at",
+		MaxAge:   -1,
+		HttpOnly: true,
+		Path:     "/",
+		Secure:   true,
+	}
+	http.SetCookie(w, &cookie)
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 	return nil
 }
 
