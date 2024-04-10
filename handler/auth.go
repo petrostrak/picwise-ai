@@ -101,3 +101,15 @@ func setAuthCookie(w http.ResponseWriter, accessToken string) {
 	}
 	http.SetCookie(w, cookie)
 }
+
+func HandleLoginWithGoogle(w http.ResponseWriter, r *http.Request) error {
+	resp, err := sb.Client.Auth.SignInWithProvider(supabase.ProviderSignInOptions{
+		Provider:   "google",
+		RedirectTo: "http://localhost:3000/auth/callback", // TODO: Read url from env var
+	})
+	if err != nil {
+		return err
+	}
+	http.Redirect(w, r, resp.URL, http.StatusSeeOther)
+	return nil
+}

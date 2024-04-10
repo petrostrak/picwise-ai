@@ -35,6 +35,7 @@ func main() {
 	router.Handle("/*", http.StripPrefix("/", http.FileServer(http.FS(FS))))
 	router.Get("/", handler.Make(handler.HandleHomeIndex))
 	router.Get("/login", handler.Make(handler.HandleSignInIndex))
+	router.Get("/login/provider/google", handler.Make(handler.HandleLoginWithGoogle))
 	router.Get("/signup", handler.Make(handler.HandleSignupIndex))
 	router.Get("/auth/callback", handler.Make(handler.HandleAuthCallback))
 	router.Post("/logout", handler.Make(handler.HandleLogoutCreate))
