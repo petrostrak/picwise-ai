@@ -2,8 +2,11 @@ package handler
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	"github.com/petrostrak/picwise-ai/db"
 	"github.com/petrostrak/picwise-ai/pkg/sb"
 	"net/http"
 	"os"
@@ -63,6 +66,28 @@ func WithAuth(next http.Handler) http.Handler {
 			return
 		}
 		next.ServeHTTP(w, r)
+	}
+	return http.HandlerFunc(fn)
+}
+
+func WithAccountSetup(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		user := getAuthenticatedUser(r)
+		account, err := db.GetAccountByUserID(user.ID)
+		// User has not yet set up account. Therefore,
+		// redirect to /account/setup
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
+				return
+			}
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		user.Account = account
+		ctx := context.WithValue(r.Context(), types.UserContextKey, user)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 	return http.HandlerFunc(fn)
 }

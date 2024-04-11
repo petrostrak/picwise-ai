@@ -47,7 +47,7 @@ func main() {
 	router.Post("/signup", handler.Make(handler.HandleSignupCreate))
 
 	router.Group(func(auth chi.Router) {
-		auth.Use(handler.WithAuth)
+		auth.Use(handler.WithAuth, handler.WithAccountSetup)
 		auth.Get("/settings", handler.Make(handler.HandleSettingsIndex))
 	})
 
