@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"github.com/petrostrak/picwise-ai/db"
 	"log"
 	"log/slog"
 	"net/http"
@@ -20,7 +21,9 @@ func Init() error {
 	if err := godotenv.Load(); err != nil {
 		return err
 	}
-
+	if err := db.Init(); err != nil {
+		return err
+	}
 	return sb.Init()
 }
 
