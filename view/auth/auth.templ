@@ -3,6 +3,33 @@ package auth
 import "github.com/petrostrak/picwise-ai/view/layout"
 import "github.com/nedpals/supabase-go"
 
+templ AccountSetup(){
+    @layout.App(true) {
+        <div class="max-w-xl bg-base-300 px-6 py-12 w-full mx-auto mt-4 rounded-xl">
+        <h1 class="text-xl font-black mb8 text-center mb-4">Set up your account</h1>
+            <label class="input input-bordered flex items-center gap-2 mb-4">
+                <div class="label">
+                	<span class="label-text-alt">Username</span>
+                </div>
+                <input type="text" name="username" class="grow"/>
+            </label>
+            <label class="input input-bordered flex items-center gap-2 mb-4">
+                <div class="label">
+                    <span class="label-text-alt">Password</span>
+                </div>
+                <input type="text" name="password" class="grow"/>
+            </label>
+            <label class="input input-bordered flex items-center gap-2 mb-4">
+                <div class="label">
+                    <span class="label-text-alt">Email</span>
+                </div>
+                <input type="text" name="email" class="grow"/>
+            </label>
+            <button class="btn btn-primary">Submit</button>
+        </div>
+    }
+}
+
 templ Login() {
 	@layout.App(false) {
 		<div class="flex justify-center mt-[calc(100vh-100vh+8rem)]">

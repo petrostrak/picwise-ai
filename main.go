@@ -41,6 +41,7 @@ func main() {
 	router.Get("/login/provider/google", handler.Make(handler.HandleLoginWithGoogle))
 	router.Get("/signup", handler.Make(handler.HandleSignupIndex))
 	router.Get("/auth/callback", handler.Make(handler.HandleAuthCallback))
+	router.Get("/account/setup", handler.Make(handler.HandleAccountSetupIndex))
 	router.Post("/logout", handler.Make(handler.HandleLogoutCreate))
 	router.Post("/login", handler.Make(handler.HandleLoginCreate))
 	router.Post("/signup", handler.Make(handler.HandleSignupCreate))

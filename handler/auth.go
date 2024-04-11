@@ -127,3 +127,7 @@ func setAuthSession(w http.ResponseWriter, r *http.Request, accessToken string) 
 	session.Values[sessionAccessTokenKey] = accessToken
 	return session.Save(r, w)
 }
+
+func HandleAccountSetupIndex(w http.ResponseWriter, r *http.Request) error {
+	return render(w, r, auth.AccountSetup())
+}
