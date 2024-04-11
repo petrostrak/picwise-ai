@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	"github.com/petrostrak/picwise-ai/pkg/sb"
 	"net/http"
@@ -37,6 +38,7 @@ func WithUser(next http.Handler) http.Handler {
 		}
 
 		user := types.AuthenticatedUser{
+			ID:       uuid.MustParse(resp.ID),
 			Email:    resp.Email,
 			LoggedIn: true,
 		}
