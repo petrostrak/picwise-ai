@@ -2,8 +2,10 @@ package handler
 
 import (
 	"context"
+	"github.com/gorilla/sessions"
 	"github.com/petrostrak/picwise-ai/pkg/sb"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/petrostrak/picwise-ai/types"
@@ -16,13 +18,19 @@ func WithUser(next http.Handler) http.Handler {
 			return
 		}
 
-		cookie, err := r.Cookie("at")
+		store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+		session, err := store.Get(r, sessionUserKey)
 		if err != nil {
 			next.ServeHTTP(w, r)
 			return
 		}
+		accessToken := session.Values[sessionAccessTokenKey]
+		if accessToken == nil {
+			next.ServeHTTP(w, r)
+			return
+		}
 
-		resp, err := sb.Client.Auth.User(r.Context(), cookie.Value)
+		resp, err := sb.Client.Auth.User(r.Context(), accessToken.(string))
 		if err != nil {
 			next.ServeHTTP(w, r)
 			return

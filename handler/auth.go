@@ -1,13 +1,24 @@
 package handler
 
 import (
+	"github.com/gorilla/sessions"
 	"github.com/petrostrak/picwise-ai/pkg/kit/validate"
 	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/nedpals/supabase-go"
 	"github.com/petrostrak/picwise-ai/pkg/sb"
 	"github.com/petrostrak/picwise-ai/view/auth"
+)
+
+const (
+	sessionUserKey        = "user"
+	sessionAccessTokenKey = "accessToken"
+)
+
+var (
+// secret = securecookie.New(securecookie.GenerateRandomKey(64), securecookie.GenerateRandomKey(32))
 )
 
 func HandleSignInIndex(w http.ResponseWriter, r *http.Request) error {
@@ -63,7 +74,9 @@ func HandleLoginCreate(w http.ResponseWriter, r *http.Request) error {
 		}))
 	}
 
-	setAuthCookie(w, resp.AccessToken)
+	if err := setAuthSession(w, r, resp.AccessToken); err != nil {
+		return err
+	}
 	return hxRedirect(w, r, "/")
 }
 
@@ -72,34 +85,25 @@ func HandleAuthCallback(w http.ResponseWriter, r *http.Request) error {
 	if len(accessToken) == 0 {
 		return render(w, r, auth.CallbaclScript())
 	}
-	setAuthCookie(w, accessToken)
+	if err := setAuthSession(w, r, accessToken); err != nil {
+		return err
+	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	return nil
 }
 
 func HandleLogoutCreate(w http.ResponseWriter, r *http.Request) error {
-	cookie := http.Cookie{
-		Value:    "",
-		Name:     "at",
-		MaxAge:   -1,
-		HttpOnly: true,
-		Path:     "/",
-		Secure:   true,
+	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+	session, err := store.Get(r, sessionUserKey)
+	if err != nil {
+		return err
 	}
-	http.SetCookie(w, &cookie)
+	session.Values[sessionAccessTokenKey] = ""
+	if err = session.Save(r, w); err != nil {
+		return err
+	}
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 	return nil
-}
-
-func setAuthCookie(w http.ResponseWriter, accessToken string) {
-	cookie := &http.Cookie{
-		Value:    accessToken,
-		Name:     "at",
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   true,
-	}
-	http.SetCookie(w, cookie)
 }
 
 func HandleLoginWithGoogle(w http.ResponseWriter, r *http.Request) error {
@@ -112,4 +116,14 @@ func HandleLoginWithGoogle(w http.ResponseWriter, r *http.Request) error {
 	}
 	http.Redirect(w, r, resp.URL, http.StatusSeeOther)
 	return nil
+}
+
+func setAuthSession(w http.ResponseWriter, r *http.Request, accessToken string) error {
+	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+	session, err := store.Get(r, sessionUserKey)
+	if err != nil {
+		return err
+	}
+	session.Values[sessionAccessTokenKey] = accessToken
+	return session.Save(r, w)
 }
