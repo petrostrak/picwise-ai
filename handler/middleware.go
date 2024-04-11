@@ -2,8 +2,11 @@ package handler
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	"github.com/petrostrak/picwise-ai/db"
 	"github.com/petrostrak/picwise-ai/pkg/sb"
 	"net/http"
 	"os"
@@ -42,6 +45,12 @@ func WithUser(next http.Handler) http.Handler {
 			Email:    resp.Email,
 			LoggedIn: true,
 		}
+		account, err := db.GetAccountByUserID(user.ID)
+		if !errors.Is(err, sql.ErrNoRows) {
+			next.ServeHTTP(w, r)
+			return
+		}
+		user.Account = account
 
 		ctx := context.WithValue(r.Context(), types.UserContextKey, user)
 		next.ServeHTTP(w, r.WithContext(ctx))
