@@ -137,14 +137,10 @@ func HandleAccountSetupIndex(w http.ResponseWriter, r *http.Request) error {
 func HandleAccountSetupCreate(w http.ResponseWriter, r *http.Request) error {
 	params := auth.AccountSetupParams{
 		Username: r.FormValue("username"),
-		Password: r.FormValue("password"),
-		Email:    r.FormValue("email"),
 	}
 	var errors auth.AccountSetupErrors
 	if ok := validate.New(&params, validate.Fields{
 		"Username": validate.Rules(validate.Min(2), validate.Max(50)),
-		"Password": validate.Rules(validate.Password),
-		"Email":    validate.Rules(validate.Email),
 	}).Validate(&errors); !ok {
 		return render(w, r, auth.AccountSetupForm(params, errors))
 	}
