@@ -7,27 +7,40 @@ templ AccountSetup(){
     @layout.App(true) {
         <div class="max-w-xl bg-base-300 px-6 py-12 w-full mx-auto mt-4 rounded-xl">
         <h1 class="text-xl font-black mb8 text-center mb-4">Set up your account</h1>
-            <label class="input input-bordered flex items-center gap-2 mb-4">
-                <div class="label">
-                	<span class="label-text-alt">Username</span>
-                </div>
-                <input type="text" name="username" class="grow"/>
-            </label>
-            <label class="input input-bordered flex items-center gap-2 mb-4">
-                <div class="label">
-                    <span class="label-text-alt">Password</span>
-                </div>
-                <input type="text" name="password" class="grow"/>
-            </label>
-            <label class="input input-bordered flex items-center gap-2 mb-4">
-                <div class="label">
-                    <span class="label-text-alt">Email</span>
-                </div>
-                <input type="text" name="email" class="grow"/>
-            </label>
-            <button class="btn btn-primary">Submit</button>
+        @AccountSetupForm(AccountSetupParams{}, AccountSetupErrors{})
         </div>
     }
+}
+
+type AccountSetupErrors struct {
+    Username string
+    Password string
+    Email string
+}
+
+type AccountSetupParams struct {
+    Username string
+    Password string
+    Email string
+}
+
+templ AccountSetupForm(params AccountSetupParams, errors AccountSetupErrors) {
+    <form
+        hx-post="/account/setup"
+        hx-swap="outerHTML">
+        <label class="input input-bordered flex items-center gap-2 mb-4">
+            <div class="label">
+                <span class="label-text-alt">Username</span>
+            </div>
+            <input type="text" name="username" class="grow"/>
+            if len(errors.Username) > 0 {
+                <div class="label">
+                    <span class="label-text-alt text-error">{errors.Username}</span>
+                </div>
+            }
+        </label>
+        <button class="btn btn-primary">Submit</button>
+    </form>
 }
 
 templ Login() {

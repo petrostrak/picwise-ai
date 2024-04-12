@@ -2,7 +2,9 @@ package handler
 
 import (
 	"github.com/gorilla/sessions"
+	"github.com/petrostrak/picwise-ai/db"
 	"github.com/petrostrak/picwise-ai/pkg/kit/validate"
+	"github.com/petrostrak/picwise-ai/types"
 	"log/slog"
 	"net/http"
 	"os"
@@ -130,4 +132,29 @@ func setAuthSession(w http.ResponseWriter, r *http.Request, accessToken string) 
 
 func HandleAccountSetupIndex(w http.ResponseWriter, r *http.Request) error {
 	return render(w, r, auth.AccountSetup())
+}
+
+func HandleAccountSetupCreate(w http.ResponseWriter, r *http.Request) error {
+	params := auth.AccountSetupParams{
+		Username: r.FormValue("username"),
+		Password: r.FormValue("password"),
+		Email:    r.FormValue("email"),
+	}
+	var errors auth.AccountSetupErrors
+	if ok := validate.New(&params, validate.Fields{
+		"Username": validate.Rules(validate.Min(2), validate.Max(50)),
+		"Password": validate.Rules(validate.Password),
+		"Email":    validate.Rules(validate.Email),
+	}).Validate(&errors); !ok {
+		return render(w, r, auth.AccountSetupForm(params, errors))
+	}
+	user := getAuthenticatedUser(r)
+	account := types.Account{
+		UserID:   user.ID,
+		Username: params.Username,
+	}
+	if err := db.CreateAccount(&account); err != nil {
+		return err
+	}
+	return hxRedirect(w, r, "/")
 }

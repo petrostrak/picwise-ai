@@ -36,7 +36,6 @@ func main() {
 	router.Use(handler.WithUser)
 
 	router.Handle("/*", http.StripPrefix("/", http.FileServer(http.FS(FS))))
-	router.Get("/", handler.Make(handler.HandleHomeIndex))
 	router.Get("/login", handler.Make(handler.HandleSignInIndex))
 	router.Get("/login/provider/google", handler.Make(handler.HandleLoginWithGoogle))
 	router.Get("/signup", handler.Make(handler.HandleSignupIndex))
@@ -45,9 +44,11 @@ func main() {
 	router.Post("/logout", handler.Make(handler.HandleLogoutCreate))
 	router.Post("/login", handler.Make(handler.HandleLoginCreate))
 	router.Post("/signup", handler.Make(handler.HandleSignupCreate))
+	router.Post("/account/setup", handler.Make(handler.HandleAccountSetupCreate))
 
 	router.Group(func(auth chi.Router) {
-		auth.Use(handler.WithAuth, handler.WithAccountSetup)
+		auth.Use(handler.WithAccountSetup)
+		auth.Get("/", handler.Make(handler.HandleHomeIndex))
 		auth.Get("/settings", handler.Make(handler.HandleSettingsIndex))
 	})
 
