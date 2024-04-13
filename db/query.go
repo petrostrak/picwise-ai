@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/petrostrak/picwise-ai/types"
 )
@@ -19,7 +18,6 @@ func GetAccountByUserID(userID uuid.UUID) (types.Account, error) {
 }
 
 func UpdateAccount(account *types.Account) error {
-	fmt.Printf("%+v\n", account)
 	_, err := Bun.NewUpdate().Model(account).WherePK().Exec(context.Background())
 	return err
 }

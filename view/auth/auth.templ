@@ -14,14 +14,10 @@ templ AccountSetup(){
 
 type AccountSetupErrors struct {
     Username string
-    Password string
-    Email string
 }
 
 type AccountSetupParams struct {
     Username string
-    Password string
-    Email string
 }
 
 templ AccountSetupForm(params AccountSetupParams, errors AccountSetupErrors) {
