@@ -28,18 +28,18 @@ templ AccountSetupForm(params AccountSetupParams, errors AccountSetupErrors) {
     <form
         hx-post="/account/setup"
         hx-swap="outerHTML">
-        <label class="input input-bordered flex items-center gap-2 mb-4">
+        <label class="form-control w-full max-w-xs">
             <div class="label">
-                <span class="label-text-alt">Username</span>
+                <span class="label-text">Username</span>
             </div>
-            <input type="text" name="username" class="grow"/>
-            if len(errors.Username) > 0 {
-                <div class="label">
-                    <span class="label-text-alt text-error">{errors.Username}</span>
-                </div>
-            }
+            <input class="input input-bordered" type="text" name="username"/>
+            <div class="label">
+                if len(errors.Username) > 0 {
+                    <span class="label-text text-error">{errors.Username}</span>
+                }
+            </div>
         </label>
-        <button class="btn btn-primary">Submit</button>
+        <button class="btn btn-primary">Set up account <i class="fa-solid fa-arrow-right"></i></button>
     </form>
 }
 
