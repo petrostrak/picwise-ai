@@ -172,3 +172,41 @@ templ CallbaclScript() {
         window.location = newURL
     </script>
 }
+
+type ResetPasswordParams struct {
+    NewPassword string
+}
+
+type ResetPasswordErrors struct {
+    NewPassword string
+}
+
+templ ResetPassword() {
+    @layout.App(false) {
+        <div class="max-w-2xl w-full mx-auto mt-8">
+            <div>
+                <h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Reset password</h1>
+                <div>
+                    <div class="py-6">
+                        <div class="text-label mb-2">Enter new Password</div>
+                        @ResetPasswordForm(ResetPasswordErrors{})
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+templ ResetPasswordForm(errors ResetPasswordErrors) {
+    <form
+        hx-put="/auth/reset-password"
+        hx-swap="outerHTML">
+        <div class="mb-4">
+            <input class="input input-bordered w-full max-w-sm" name="password" type="password"/>
+            if len(errors.NewPassword) >0 {
+                <div class="text-sm text-error mt-1">{errors.NewPassword}</div>
+            }
+        </div>
+        <button class="btn btn-primary">Update password</button>
+    </form>
+}

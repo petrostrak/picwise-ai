@@ -155,3 +155,16 @@ func HandleAccountSetupCreate(w http.ResponseWriter, r *http.Request) error {
 	}
 	return hxRedirect(w, r, "/")
 }
+
+func HandleResetPasswordIndex(w http.ResponseWriter, r *http.Request) error {
+	return render(w, r, auth.ResetPassword())
+}
+
+func HandleResetPasswordCreate(w http.ResponseWriter, r *http.Request) error {
+	return render(w, r, auth.ResetPassword())
+}
+
+func HandleResetPasswordUpdate(w http.ResponseWriter, r *http.Request) error {
+	//return render(w, r, auth.ResetPassword())
+	return hxRedirect(w, r, "/")
+}
