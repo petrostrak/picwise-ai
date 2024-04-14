@@ -210,3 +210,7 @@ templ ResetPasswordForm(errors ResetPasswordErrors) {
         <button class="btn btn-primary">Update password</button>
     </form>
 }
+
+templ ResetPasswordSuccess(email string) {
+    <div>A password reset link is sent to <span class="text-info font-semibold">{email}</span></div>
+}

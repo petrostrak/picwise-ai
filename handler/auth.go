@@ -161,7 +161,12 @@ func HandleResetPasswordIndex(w http.ResponseWriter, r *http.Request) error {
 }
 
 func HandleResetPasswordCreate(w http.ResponseWriter, r *http.Request) error {
-	return render(w, r, auth.ResetPassword())
+	user := getAuthenticatedUser(r)
+	if err := sb.Client.Auth.ResetPasswordForEmail(r.Context(), user.Email); err != nil {
+		return err
+	}
+
+	return render(w, r, auth.ResetPasswordSuccess(user.Email))
 }
 
 func HandleResetPasswordUpdate(w http.ResponseWriter, r *http.Request) error {

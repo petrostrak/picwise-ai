@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/petrostrak/picwise-ai/db"
 	"github.com/petrostrak/picwise-ai/pkg/kit/validate"
-	"github.com/petrostrak/picwise-ai/pkg/sb"
 	"github.com/petrostrak/picwise-ai/view/settings"
 	"net/http"
 	"time"
@@ -32,9 +31,4 @@ func HandleSettingsUsernameUpdate(w http.ResponseWriter, r *http.Request) error 
 	}
 	params.Success = true
 	return render(w, r, settings.ProfileForm(params, settings.ProfileErrors{}))
-}
-
-func HandleSettingsResetPassword(w http.ResponseWriter, r *http.Request) error {
-	user := getAuthenticatedUser(r)
-	return sb.Client.Auth.ResetPasswordForEmail(r.Context(), user.Email)
 }
