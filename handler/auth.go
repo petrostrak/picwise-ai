@@ -149,7 +149,8 @@ func HandleAccountSetupCreate(w http.ResponseWriter, r *http.Request) error {
 		UserID:   user.ID,
 		Username: params.Username,
 	}
-	if err := db.CreateAccount(&account); err != nil {
+	user.Account = account
+	if err := db.CreateAccount(&user.Account); err != nil {
 		return err
 	}
 	return hxRedirect(w, r, "/")

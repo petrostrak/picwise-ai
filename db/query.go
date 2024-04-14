@@ -18,6 +18,6 @@ func GetAccountByUserID(userID uuid.UUID) (types.Account, error) {
 }
 
 func UpdateAccount(account *types.Account) error {
-	_, err := Bun.NewUpdate().Model(account).WherePK().Exec(context.Background())
+	_, err := Bun.NewUpdate().Model(account).WherePK("user_id").Exec(context.Background())
 	return err
 }

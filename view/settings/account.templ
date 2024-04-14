@@ -18,7 +18,7 @@ templ Index(user types.AuthenticatedUser) {
             <div>
                 <h1 class="text-lg font-semibold border-b border-gray-700 pb-2">Profile</h1>
                     @ProfileForm(ProfileParams{
-                        Username: user.Username,
+                        Username: user.Account.Username,
                     },ProfileErrors{})
             </div>
             <div class="mt-10">

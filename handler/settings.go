@@ -5,6 +5,7 @@ import (
 	"github.com/petrostrak/picwise-ai/pkg/kit/validate"
 	"github.com/petrostrak/picwise-ai/view/settings"
 	"net/http"
+	"time"
 )
 
 func HandleSettingsIndex(w http.ResponseWriter, r *http.Request) error {
@@ -23,7 +24,8 @@ func HandleSettingsUsernameUpdate(w http.ResponseWriter, r *http.Request) error 
 		return render(w, r, settings.ProfileForm(params, errors))
 	}
 	user := getAuthenticatedUser(r)
-	user.Username = params.Username
+	user.Account.Username = params.Username
+	user.Account.CreatedAt = time.Now()
 	if err := db.UpdateAccount(&user.Account); err != nil {
 		return err
 	}

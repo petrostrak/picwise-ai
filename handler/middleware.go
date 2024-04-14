@@ -44,6 +44,9 @@ func WithUser(next http.Handler) http.Handler {
 			ID:       uuid.MustParse(resp.ID),
 			Email:    resp.Email,
 			LoggedIn: true,
+			Account: types.Account{
+				UserID: uuid.MustParse(resp.ID),
+			},
 		}
 
 		ctx := context.WithValue(r.Context(), types.UserContextKey, user)
