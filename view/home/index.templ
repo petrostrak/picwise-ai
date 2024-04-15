@@ -3,7 +3,11 @@ package home
 import "github.com/petrostrak/picwise-ai/view/layout"
 
 templ Index() {
-    @layout.App(true){
-        <div>Hello from the Home page</div>
+    @layout.App(true) {
+        <div class="w-full max-w-screen-xl mx-auto text-center py-12">
+            <h1 class="text-5xl font-black leading-[1.2] mb-2">Hello from the Home page</h1>
+            <h2 class="text-xl font-semibold mb-6">This is an awesome AI app</h2>
+            <button class="btn btn-primary">Generate images now <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
     }
 }
