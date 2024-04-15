@@ -40,6 +40,25 @@ func GetImagesByUserID(userID uuid.UUID) ([]types.Image, error) {
 		Model(&images).
 		Where("deleted = ?", false).
 		Where("user_id = ?", userID).
+		Order("created_at desc").
 		Scan(context.Background())
 	return images, err
+}
+
+func CreateImage(image *types.Image) error {
+	_, err := Bun.
+		NewInsert().
+		Model(image).
+		Exec(context.Background())
+	return err
+}
+
+func GetImageByID(id int) (types.Image, error) {
+	var image types.Image
+	err := Bun.
+		NewSelect().
+		Model(&image).
+		Where("id = ?", id).
+		Scan(context.Background())
+	return image, err
 }
