@@ -41,9 +41,10 @@ func WithUser(next http.Handler) http.Handler {
 		}
 
 		user := types.AuthenticatedUser{
-			ID:       uuid.MustParse(resp.ID),
-			Email:    resp.Email,
-			LoggedIn: true,
+			ID:          uuid.MustParse(resp.ID),
+			Email:       resp.Email,
+			LoggedIn:    true,
+			AccessToken: accessToken.(string),
 			Account: types.Account{
 				UserID: uuid.MustParse(resp.ID),
 			},

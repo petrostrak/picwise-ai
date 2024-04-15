@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"github.com/gorilla/sessions"
 	"github.com/petrostrak/picwise-ai/db"
 	"github.com/petrostrak/picwise-ai/pkg/kit/validate"
@@ -162,14 +165,38 @@ func HandleResetPasswordIndex(w http.ResponseWriter, r *http.Request) error {
 
 func HandleResetPasswordCreate(w http.ResponseWriter, r *http.Request) error {
 	user := getAuthenticatedUser(r)
-	if err := sb.Client.Auth.ResetPasswordForEmail(r.Context(), user.Email); err != nil {
+	params := map[string]any{
+		"email":      user.Email,
+		"redirectTo": "http://localhost:3000/auth/reset-password",
+	}
+	b, err := json.Marshal(params)
+	if err != nil {
 		return err
 	}
-
-	return render(w, r, auth.ResetPasswordSuccess(user.Email))
+	req, err := http.NewRequest("POST", os.Getenv("BASE_AUTH_URL"), bytes.NewReader(b))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("apikey", os.Getenv("SUPABASE_SECRET"))
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("supabase password recovery failed with status code: %d\n", resp.StatusCode)
+	}
+	return render(w, r, auth.ResetPasswordInitiated(user.Email))
 }
 
 func HandleResetPasswordUpdate(w http.ResponseWriter, r *http.Request) error {
-	//return render(w, r, auth.ResetPassword())
+	user := getAuthenticatedUser(r)
+	params := map[string]any{
+		"password": r.FormValue("password"),
+	}
+	resp, err := sb.Client.Auth.UpdateUser(r.Context(), user.AccessToken, params)
+	if err != nil {
+		return render(w, r, auth.ResetPasswordForm(auth.ResetPasswordErrors{NewPassword: "Please enter a valid password"}))
+	}
+	fmt.Printf("$+v\n", resp)
 	return hxRedirect(w, r, "/")
 }
