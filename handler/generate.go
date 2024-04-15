@@ -1,16 +1,20 @@
 package handler
 
 import (
-	"github.com/go-chi/chi/v5"
+	"github.com/petrostrak/picwise-ai/db"
 	"github.com/petrostrak/picwise-ai/types"
 	"github.com/petrostrak/picwise-ai/view/generate"
-	"log/slog"
 	"net/http"
 )
 
 func HandleGenerateIndex(w http.ResponseWriter, r *http.Request) error {
+	user := getAuthenticatedUser(r)
+	images, err := db.GetImagesByUserID(user.ID)
+	if err != nil {
+		return err
+	}
 	data := generate.ViewData{
-		Images: []types.Image{},
+		Images: images,
 	}
 	return render(w, r, generate.Index(data))
 }
@@ -20,7 +24,7 @@ func HandleGenerateCreate(w http.ResponseWriter, r *http.Request) error {
 }
 
 func HandleGenerateImageStatus(w http.ResponseWriter, r *http.Request) error {
-	id := chi.URLParam(r, "id")
-	slog.Info("checking image status", "id", id)
+	//id := chi.URLParam(r, "id")
+	//slog.Info("checking image status", "id", id)
 	return render(w, r, generate.GalleryImage(types.Image{Status: types.ImageStatusPending}))
 }
