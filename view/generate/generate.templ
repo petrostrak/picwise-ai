@@ -2,6 +2,7 @@ package generate
 
 import "github.com/petrostrak/picwise-ai/view/layout"
 import "github.com/petrostrak/picwise-ai/types"
+import "fmt"
 
 type ViewData struct {
     Images []types.Image
@@ -10,12 +11,26 @@ type ViewData struct {
 templ Index(data ViewData) {
     @layout.App(true) {
         <div class="flex w-full h-[calc(100vh-69px)]">
-            <div class="w-[400px] border-r border-app p-4">Generate form</div>
+            <div class="w-[400px] border-r border-app p-4">
+                @Form()
+            </div>
             <div class="flex-1 bg-base-300">
                 @Gallery(data.Images)
             </div>
         </div>
     }
+}
+
+templ Form() {
+    <form
+        hx-post="/generate"
+        hx-swap="beforeend"
+        hx-target="#gallery"
+    >
+        <div>
+            <button class="btn btn-primary w-full">generate</button>
+        </div>
+    </form>
 }
 
 templ Gallery(images []types.Image) {
@@ -39,6 +54,8 @@ templ GalleryImage(image types.Image) {
 		</div>
 	} else if image.Status == types.ImageStatusPending {
 		<div
+		    hx-get={fmt.Sprintf("/generate/image/status/%d", image.ID)}
+		    hx-trigger="load delay:3s"
 			class="bg-red-100 aspect-square rounded-xl flex justify-center items-center"
 		>
 			<div>
