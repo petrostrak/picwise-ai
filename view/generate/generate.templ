@@ -3,16 +3,19 @@ package generate
 import "github.com/petrostrak/picwise-ai/view/layout"
 import "github.com/petrostrak/picwise-ai/types"
 import "fmt"
+import "github.com/petrostrak/picwise-ai/view"
 
 type ViewData struct {
     Images []types.Image
+    FormParams FormParams
+    FormErrors FormErrors
 }
 
 templ Index(data ViewData) {
     @layout.App(true) {
         <div class="flex w-full h-[calc(100vh-69px)]">
             <div class="w-[400px] border-r border-app p-4">
-                @Form()
+                @Form(data.FormParams, data.FormErrors)
             </div>
             <div class="flex-1 bg-base-300">
                 @Gallery(data.Images)
@@ -21,13 +24,52 @@ templ Index(data ViewData) {
     }
 }
 
-templ Form() {
+type FormParams struct {
+    Prompt string
+    Amount int
+}
+
+type FormErrors struct {
+    Prompt string
+    Amount string
+}
+
+templ Form(params FormParams, errors FormErrors) {
     <form
         hx-post="/generate"
-        hx-swap="afterbegin"
-        hx-target="#gallery"
+        hx-swap="outerHTML"
     >
         <div>
+            <label class="form-control">
+                <div class="label">
+                	<span class="label-text">Enter your prompt</span>
+                </div>
+                <textarea class="textarea textarea-bordered h-24" placeholder="A woman in white dress" name="prompt">{params.Prompt}</textarea>
+                if len(errors.Prompt) > 0 {
+                    <div class="label">
+                        <span class="label-text text-error">{errors.Prompt}</span>
+                    </div>
+                }
+            </label>
+            <label class="form-control my-4">
+                <div class="label">
+                    <span class="label-text">How many images</span>
+                </div>
+                <div class="join">
+                    for _, amount := range amounts {
+                        if amount == view.String(params.Amount) {
+                            <input checked class="join-item btn" type="radio" name="amount" value={amount} aria-label={amount} />
+                        } else {
+                            <input class="join-item btn" type="radio" name="amount" value={amount} aria-label={amount} />
+                        }
+                    }
+                </div>
+                if len(errors.Prompt) > 0 {
+                    <div class="label">
+                        <span class="label-text text-error">{errors.Amount}</span>
+                    </div>
+                }
+            </label>
             <button class="btn btn-primary w-full">generate</button>
         </div>
     </form>
@@ -64,3 +106,5 @@ templ GalleryImage(image types.Image) {
 		</div>
 	}
 }
+
+var amounts =  []string{ "1", "2", "3", "4" }

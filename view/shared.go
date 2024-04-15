@@ -2,6 +2,7 @@ package view
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/petrostrak/picwise-ai/types"
 )
@@ -12,4 +13,8 @@ func AuthenticatedUser(ctx context.Context) types.AuthenticatedUser {
 		return types.AuthenticatedUser{}
 	}
 	return user
+}
+
+func String(i int) string {
+	return strconv.Itoa(i)
 }
