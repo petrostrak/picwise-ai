@@ -16,6 +16,7 @@ const (
 type Image struct {
 	ID            int `bun:"id,pk,autoincrement"`
 	UserID        uuid.UUID
+	BatchID       uuid.UUID
 	Status        ImageStatus
 	Prompt        string
 	ImageLocation string
