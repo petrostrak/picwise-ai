@@ -3,13 +3,16 @@ package handler
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/petrostrak/picwise-ai/db"
 	"github.com/petrostrak/picwise-ai/pkg/kit/validate"
 	"github.com/petrostrak/picwise-ai/types"
 	"github.com/petrostrak/picwise-ai/view/generate"
+	"github.com/replicate/replicate-go"
 	"github.com/uptrace/bun"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -46,14 +49,25 @@ func HandleGenerateCreate(w http.ResponseWriter, r *http.Request) error {
 	}).Validate(&errors); !ok {
 		return render(w, r, generate.Form(params, errors))
 	}
+
+	genParams := GenerateImageParams{
+		Prompt:  params.Prompt,
+		Amount:  params.Amount,
+		UserID:  user.ID,
+		BatchID: uuid.New(),
+	}
+
+	if err := generateImages(r.Context(), genParams); err != nil {
+		return err
+	}
+
 	err = db.Bun.RunInTx(r.Context(), &sql.TxOptions{}, func(ctx context.Context, tx bun.Tx) error {
-		batchID := uuid.New()
 		for i := 0; i < params.Amount; i++ {
 			image := types.Image{
 				UserID:  user.ID,
 				Prompt:  params.Prompt,
 				Status:  types.ImageStatusPending,
-				BatchID: batchID,
+				BatchID: genParams.BatchID,
 			}
 			if err := db.CreateImage(&image); err != nil {
 				return err
@@ -77,4 +91,28 @@ func HandleGenerateImageStatus(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 	return render(w, r, generate.GalleryImage(image))
+}
+
+type GenerateImageParams struct {
+	Prompt  string
+	Amount  int
+	UserID  uuid.UUID
+	BatchID uuid.UUID
+}
+
+func generateImages(ctx context.Context, params GenerateImageParams) error {
+	r8, err := replicate.NewClient(replicate.WithTokenFromEnv())
+	if err != nil {
+		log.Fatal(err)
+	}
+	input := replicate.PredictionInput{
+		"prompt":      params.Prompt,
+		"num_outputs": params.Amount,
+	}
+	webhook := replicate.Webhook{
+		URL:    fmt.Sprintf("https://webhook.site/214305cd-0416-4f6b-890e-69cb47f43c3a/%s/%s", params.UserID, params.BatchID),
+		Events: []replicate.WebhookEventType{"completed"},
+	}
+	_, err = r8.CreatePrediction(ctx, "d70beb400d223e6432425a5299910329c6050c6abcf97b8c70537d6a1fcb269a", input, &webhook, false)
+	return err
 }
