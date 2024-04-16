@@ -4,6 +4,7 @@ import "github.com/petrostrak/picwise-ai/view/layout"
 import "github.com/petrostrak/picwise-ai/types"
 import "fmt"
 import "github.com/petrostrak/picwise-ai/view"
+import "github.com/petrostrak/picwise-ai/view/ui"
 
 type ViewData struct {
     Images []types.Image
@@ -32,6 +33,9 @@ type FormParams struct {
 type FormErrors struct {
     Prompt string
     Amount string
+    CreditsNeeded int
+    UserCredits int
+    Credits bool
 }
 
 templ Form(params FormParams, errors FormErrors) {
@@ -73,6 +77,9 @@ templ Form(params FormParams, errors FormErrors) {
             <button class="btn btn-primary w-full">generate</button>
         </div>
     </form>
+    if errors.Credits {
+        @ui.CreditsModal(errors.CreditsNeeded, errors.UserCredits)
+    }
 }
 
 templ Gallery(images []types.Image) {

@@ -17,6 +17,8 @@ import (
 	"strconv"
 )
 
+const cretidsPerImage = 2
+
 func HandleGenerateIndex(w http.ResponseWriter, r *http.Request) error {
 	user := getAuthenticatedUser(r)
 	images, err := db.GetImagesByUserID(user.ID)
@@ -47,6 +49,14 @@ func HandleGenerateCreate(w http.ResponseWriter, r *http.Request) error {
 	if ok := validate.New(params, validate.Fields{
 		"Prompt": validate.Rules(validate.Min(5), validate.Max(100)),
 	}).Validate(&errors); !ok {
+		return render(w, r, generate.Form(params, errors))
+	}
+
+	creditsNeeded := params.Amount * cretidsPerImage
+	if user.Account.Credits < creditsNeeded {
+		errors.CreditsNeeded = creditsNeeded
+		errors.UserCredits = user.Account.Credits
+		errors.Credits = true
 		return render(w, r, generate.Form(params, errors))
 	}
 
