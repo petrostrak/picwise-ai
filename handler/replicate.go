@@ -13,7 +13,10 @@ import (
 	"net/http"
 )
 
-const succeded = "succeded"
+const (
+	succeded   = "succeded"
+	processing = "processing"
+)
 
 type ReplicateResponse struct {
 	Input struct {
@@ -29,8 +32,12 @@ func HandleReplicateCallback(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
+	if resp.Status == processing {
+		return nil
+	}
+
 	if resp.Status != succeded {
-		return fmt.Errorf("replicate callback responsed with: %s", resp.Status)
+		return fmt.Errorf("replicate callback responded with: %s", resp.Status)
 	}
 
 	batchID, err := uuid.Parse(chi.URLParam(r, "batchID"))
