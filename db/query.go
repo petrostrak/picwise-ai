@@ -62,3 +62,14 @@ func GetImageByID(id int) (types.Image, error) {
 		Scan(context.Background())
 	return image, err
 }
+
+func GetImagesByBatchID(batchID uuid.UUID) ([]types.Image, error) {
+	var images []types.Image
+	err := Bun.
+		NewSelect().
+		Model(&images).
+		Where("batch_id = ?", batchID).
+		Order("created_at desc").
+		Scan(context.Background())
+	return images, err
+}
