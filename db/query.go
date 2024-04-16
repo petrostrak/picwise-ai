@@ -73,3 +73,12 @@ func GetImagesByBatchID(batchID uuid.UUID) ([]types.Image, error) {
 		Scan(context.Background())
 	return images, err
 }
+
+func UpdateImage(image *types.Image) error {
+	_, err := Bun.
+		NewUpdate().
+		Model(image).
+		WherePK("user_id").
+		Exec(context.Background())
+	return err
+}

@@ -65,7 +65,6 @@ func HandleGenerateCreate(w http.ResponseWriter, r *http.Request) error {
 		for i := 0; i < params.Amount; i++ {
 			image := types.Image{
 				UserID:  user.ID,
-				Prompt:  params.Prompt,
 				Status:  types.ImageStatusPending,
 				BatchID: genParams.BatchID,
 			}
