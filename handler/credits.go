@@ -40,7 +40,6 @@ func HandleStripeCheckoutCreate(w http.ResponseWriter, r *http.Request) error {
 func HandleStripeCheckoutSuccess(w http.ResponseWriter, r *http.Request) error {
 	user := getAuthenticatedUser(r)
 	sessionID := chi.URLParam(r, "sessionID")
-	fmt.Println(sessionID)
 	stripe.Key = os.Getenv("STRIPE_API_KEY")
 	sess, err := session.Get(sessionID, nil)
 	if err != nil {
