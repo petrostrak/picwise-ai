@@ -60,6 +60,11 @@ func HandleGenerateCreate(w http.ResponseWriter, r *http.Request) error {
 		return render(w, r, generate.Form(params, errors))
 	}
 
+	user.Account.Credits -= creditsNeeded
+	if err := db.UpdateAccount(&user.Account); err != nil {
+		return err
+	}
+
 	genParams := GenerateImageParams{
 		Prompt:  params.Prompt,
 		Amount:  params.Amount,

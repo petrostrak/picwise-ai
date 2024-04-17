@@ -69,7 +69,7 @@ func main() {
 		auth.Get("/buy-credits", handler.Make(handler.HandleCreditsIndex))
 		auth.Get("/checkout/create/{priceID}", handler.Make(handler.HandleStripeCheckoutCreate))
 
-		auth.Get("/checkout/success", handler.Make(handler.HandleStripeCheckoutSuccess))
+		auth.Get("/checkout/success/{sessionID}", handler.Make(handler.HandleStripeCheckoutSuccess))
 		auth.Get("/checkout/cancel", handler.Make(handler.HandleStripeCheckoutCancel))
 	})
 
