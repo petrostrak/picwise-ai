@@ -10,7 +10,8 @@ templ CreditsModal(creditsNeeded int, userCredits int) {
         <p class="py-4">Buy more credits to keep using this feature</p>
         <p class="py-4">You have {view.String(userCredits)} credits but need {view.String(creditsNeeded)}.</p>
         <div class="modal-action">
-          <form method="dialog">
+          <form class="modal-actionf lex justify-between">
+            <a href="/buy-credits" class="btn btn-outline">buy credits</a>
             <button class="btn">Close</button>
           </form>
         </div>
