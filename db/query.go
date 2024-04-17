@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/petrostrak/picwise-ai/types"
+	"github.com/uptrace/bun"
 )
 
 func CreateAccount(account *types.Account) error {
@@ -45,8 +46,8 @@ func GetImagesByUserID(userID uuid.UUID) ([]types.Image, error) {
 	return images, err
 }
 
-func CreateImage(image *types.Image) error {
-	_, err := Bun.
+func CreateImage(tx bun.Tx, image *types.Image) error {
+	_, err := tx.
 		NewInsert().
 		Model(image).
 		Exec(context.Background())
@@ -74,8 +75,8 @@ func GetImagesByBatchID(batchID uuid.UUID) ([]types.Image, error) {
 	return images, err
 }
 
-func UpdateImage(image *types.Image) error {
-	_, err := Bun.
+func UpdateImage(tx bun.Tx, image *types.Image) error {
+	_, err := tx.
 		NewUpdate().
 		Model(image).
 		WherePK("user_id").

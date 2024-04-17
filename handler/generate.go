@@ -83,7 +83,7 @@ func HandleGenerateCreate(w http.ResponseWriter, r *http.Request) error {
 				Status:  types.ImageStatusPending,
 				BatchID: genParams.BatchID,
 			}
-			if err := db.CreateImage(&image); err != nil {
+			if err := db.CreateImage(tx, &image); err != nil {
 				return err
 			}
 		}
